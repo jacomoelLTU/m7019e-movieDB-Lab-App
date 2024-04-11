@@ -1,4 +1,4 @@
-package com.example.themoviedbv24.viewmodels
+package com.example.themoviedbv24.ui.screens
 
 
 import androidx.compose.foundation.layout.Box
@@ -32,12 +32,13 @@ fun MovieListScreen(
     movieList : List<Movie>,
     onMovieListItemClicked: (Movie) -> Unit,
     modifier: Modifier = Modifier
-) {
-    LazyColumn (
+)
+{
+    LazyColumn(
         modifier = modifier
     ) {
         items(movieList) { movie ->
-            movieListItemCard(
+            MovieListItemCard(
                 movie = movie,
                 onMovieListItemClicked,
                 modifier = modifier.padding(8.dp)
@@ -46,18 +47,21 @@ fun MovieListScreen(
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun movieListItemCard(movie: Movie,
-                      modifier: Modifier = Modifier,
-                      onMovieListItemClicked: (Movie) -> Unit,
-) {
+fun MovieListItemCard(
+    movie: Movie,
+    onMovieListItemClicked: (Movie) -> Unit,
+    modifier: Modifier = Modifier
+)
+{
     Card(modifier = modifier,
          onClick = {
              onMovieListItemClicked(movie)
          }
         ) {
-        Row () {
+        Row {
             Box {
                 AsyncImage(
                     model = Constants.POSTER_IMAGE_BASE_URL + Constants.POSTER_IMAGE_WIDTH + movie.posterPath,
@@ -80,9 +84,9 @@ fun movieListItemCard(movie: Movie,
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
-                    text = movie.overwiew,
+                    text = movie.overview,
                     style = MaterialTheme.typography.bodySmall,
-                    maxLines = 2,
+                    maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.size(8.dp))
@@ -95,7 +99,7 @@ fun movieListItemCard(movie: Movie,
 @Composable
 fun MovieItemPreview() {
     TheMovieDBV24Theme {
-        movieListItemCard(
+        MovieListItemCard(
             movie = Movie(
                 2,
                 "Road House",
@@ -104,7 +108,7 @@ fun MovieItemPreview() {
                 "2024-03-08",
                 "Ex-UFC fighter Dalton takes a job as a bouncer at a Florida Keys " +
                         "roadhouse, only to discover that this paradise is not all it seems."
-            )
+            ), {}
         )
     }
 }
