@@ -18,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -30,13 +29,15 @@ import androidx.navigation.compose.rememberNavController
 
 import com.example.themoviedbv24.database.Movies
 import com.example.themoviedbv24.ui.screens.MovieDetailScreen
+import com.example.themoviedbv24.ui.screens.MovieExpandedDetailScreen
 import com.example.themoviedbv24.viewmodels.MovieDBViewModel
 import com.example.themoviedbv24.ui.screens.MovieListScreen
 
 
 enum class MovieDBScreen (@StringRes val title: Int) {
     List(title = R.string.app_name),
-    Details(title = R.string.movie_detail)
+    Details(title = R.string.movie_detail),
+    ExpandedDetails(title = R.string.movie_detail_expanded)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,6 +113,19 @@ fun TheMovieDBApp(
                 uiState.selectedMovie?.let { movie ->
                     MovieDetailScreen(
                         movie = movie,
+                        modifier = Modifier,
+                        onExpandDetailsClicked = {
+                            navController.navigate(MovieDBScreen.ExpandedDetails.name)
+                        }
+                    )
+                }
+            }
+            composable(route = MovieDBScreen.ExpandedDetails.name) {
+                uiState.selectedMovie?.let { movie ->
+                    MovieExpandedDetailScreen(
+                        movieTitle = movie.title,
+                        expandedMovieDetails = movie.expandDetails,
+                        //expandDetails = ,
                         modifier = Modifier
                     )
                 }

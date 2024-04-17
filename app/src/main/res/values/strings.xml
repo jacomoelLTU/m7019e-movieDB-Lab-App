@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">The Movie DB V24</string>
     <string name="movie_detail">Movie Detail</string>
+    <string name="movie_detail_expanded">Movie Details Expanded</string>
     <string name="back_button">back</string>
 </resources>

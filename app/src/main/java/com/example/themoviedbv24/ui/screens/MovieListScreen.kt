@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.themoviedbv24.model.ExpandedMovieDetail
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.ui.theme.TheMovieDBV24Theme
 import com.example.themoviedbv24.utils.Constants
@@ -107,7 +108,18 @@ fun MovieItemPreview() {
                 "/9c0lHTXRqDBxeOToVzRu0GArSne.jpg",
                 "2024-03-08",
                 "Ex-UFC fighter Dalton takes a job as a bouncer at a Florida Keys " +
-                        "roadhouse, only to discover that this paradise is not all it seems."
+                        "roadhouse, only to discover that this paradise is not all it seems.",
+                ExpandedMovieDetail(
+                    //2,
+                    mutableListOf(
+                        "Action",
+                        "Thriller"
+                    ),
+                    "Released",
+                    "Take it outside.",
+                    "https://www.amazon.com/gp/video/detail/B0CH5YQPZQ",
+                    "tt3359350"
+                )
             ), {}
         )
     }
