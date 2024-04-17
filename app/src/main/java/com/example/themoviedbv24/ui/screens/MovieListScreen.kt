@@ -41,7 +41,7 @@ fun MovieListScreen(
             MovieListItemCard(
                 movie = movie,
                 onMovieListItemClicked,
-                modifier = modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp)
             )
         }
     }
@@ -69,7 +69,7 @@ fun MovieListItemCard(
                     modifier = modifier
                         .width(92.dp)
                         .height(138.dp),
-                    contentScale = ContentScale.Crop
+                    //contentScale = ContentScale.Crop
                 )
             }
             Column {

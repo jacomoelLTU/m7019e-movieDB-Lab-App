@@ -104,8 +104,8 @@ fun TheMovieDBApp(
                         navController.navigate(MovieDBScreen.Details.name)
                     },
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
+                        //.fillMaxSize()
+                        .padding(8.dp)
                 )
             }
             composable(route = MovieDBScreen.Details.name) {
