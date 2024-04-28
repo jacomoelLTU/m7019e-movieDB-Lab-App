@@ -13,7 +13,7 @@ interface AppContainer {
     val moviesRepository: MoviesRepository
 }
 
-class DefaultAppContainer(private val context: Context) {
+class DefaultAppContainer(private val context: Context) : AppContainer {
 
     fun getLoggerInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
@@ -41,7 +41,11 @@ class DefaultAppContainer(private val context: Context) {
         retrofit.create(MovieDBApiService::class.java)
     }
 
-     val moviesRepository: MoviesRepository by lazy {
+     override val moviesRepository: MoviesRepository by lazy {
         NetworkMoviesRepository(retrofitService)
     }
+
+//    override val savedMovieRepository: SavedMovieRepository by lazy {
+//        FavoriteMoviesRepository(MovieDatabase.getDatabase(context).movieDao())
+//    }
 }

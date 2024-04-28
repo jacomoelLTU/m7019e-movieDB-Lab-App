@@ -28,5 +28,17 @@ interface SavedMoviesRepository {
     suspend fun deleteMovie(movie: Movie)
 }
 
-
-
+class FavoriteMoviesRepository(private val movieDao: MovieDao) : SavedMoviesRepository {
+    override suspend fun getSavedMovies(): List<Movie> {
+        return movieDao.getFavoriteMovies()
+    }
+    override suspend fun insertMovie(movie: Movie) {
+        movieDao.insertFavoriteMovie(movie)
+    }
+    override suspend fun getMovie(id: Long): Movie {
+        return movieDao.getMovie(id)
+    }
+    override suspend fun deleteMovie(movie: Movie) {
+        movieDao.deleteFavoriteMovie(movie.id)
+    }
+}

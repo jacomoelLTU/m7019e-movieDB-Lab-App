@@ -26,25 +26,50 @@ import com.example.themoviedbv24.model.ExpandedMovieDetail
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.ui.theme.TheMovieDBV24Theme
 import com.example.themoviedbv24.utils.Constants
+import com.example.themoviedbv24.viewmodels.MovieListUiState
 
 
 @Composable
 fun MovieListScreen(
-    movieList : List<Movie>,
+    movieListUiState : MovieListUiState,
     onMovieListItemClicked: (Movie) -> Unit,
     modifier: Modifier = Modifier
 )
 {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(movieList) { movie ->
-            MovieListItemCard(
-                movie = movie,
-                onMovieListItemClicked,
-                modifier = Modifier.padding(8.dp)
-            )
+    LazyColumn(modifier = modifier) {
+
+        when (movieListUiState) {
+            is MovieListUiState.Success -> {
+                items(movieListUiState.movies) { movie ->
+                    MovieListItemCard(
+                        movie = movie,
+                        onMovieListItemClicked,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+
+            is MovieListUiState.Loading -> {
+                item {
+                    Text(
+                        text = "Loading...",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+
+            is MovieListUiState.Error -> {
+                item {
+                    Text (
+                        text = "Error: something went wrong",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
         }
+
     }
 }
 
@@ -109,17 +134,17 @@ fun MovieItemPreview() {
                 "2024-03-08",
                 "Ex-UFC fighter Dalton takes a job as a bouncer at a Florida Keys " +
                         "roadhouse, only to discover that this paradise is not all it seems.",
-                ExpandedMovieDetail(
-                    //2,
-                    mutableListOf(
-                        "Action",
-                        "Thriller"
-                    ),
-                    "Released",
-                    "Take it outside.",
-                    "https://www.amazon.com/gp/video/detail/B0CH5YQPZQ",
-                    "tt3359350"
-                )
+//                ExpandedMovieDetail(
+//                    //2,
+//                    mutableListOf(
+//                        "Action",
+//                        "Thriller"
+//                    ),
+//                    "Released",
+//                    "Take it outside.",
+//                    "https://www.amazon.com/gp/video/detail/B0CH5YQPZQ",
+//                    "tt3359350"
+//                )
             ), {}
         )
     }
