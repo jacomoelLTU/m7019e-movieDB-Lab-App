@@ -6,8 +6,8 @@ import androidx.room.OnConflictStrategy
 import retrofit2.http.Query
 import com.example.themoviedbv24.model.Movie
 
-@Dao
-interface MovieDao {
+//@Dao
+//interface MovieDao {
 
 //    @Query("SELECT * FROM favorite_movies")
 //    suspend fun getFavoriteMovies(): List<Movie>
@@ -21,4 +21,4 @@ interface MovieDao {
 //    @Query("DELETE FROM favorite_movies WHERE id = :id")
 //    suspend fun deleteFavoriteMovie(id: Long)
 
-}
+//}

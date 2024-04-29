@@ -10,6 +10,6 @@ object Constants {
     const val API_KEY : String = SECRETS.API_KEY
 
     //TMDB paths lab 2
-    const val MOVIE_LIST_BASE_URL = "https://api.themoviedb.org/3/movie"
+    const val MOVIE_LIST_BASE_URL = "https://api.themoviedb.org/3/movie/"
 
 }

@@ -41,7 +41,8 @@ import com.example.themoviedbv24.viewmodels.MovieDBViewModel
 
 enum class MovieDBScreen(@StringRes val title: Int) {
     List(title = R.string.app_name),
-    Detail(title = R.string.movie_detail)
+    Detail(title = R.string.movie_detail),
+    ExpandedDetails(title = R.string.movie_detail_expanded)
 }
 
 
@@ -56,64 +57,14 @@ fun MovieDBAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    movieDBViewModel: MovieDBViewModel
+    //movieDBViewModel: MovieDBViewModel
 ) {
-    var menuExpanded by remember { mutableStateOf(false) }
-
+    //var menuExpanded by remember { mutableStateOf(false) }
     TopAppBar(
         title = { Text(stringResource(currentScreen.title)) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        actions = {
-            IconButton(onClick = {
-                // Set the menu expanded state to the opposite of the current state
-                menuExpanded = !menuExpanded
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.MoreVert,
-                    contentDescription = "Open Menu to select different movie lists"
-                )
-            }
-            DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
-                DropdownMenuItem(
-                    onClick = {
-                        // Set the selected movie list to popular
-                        movieDBViewModel.getPopularMovies()
-                        // Set the menu expanded state to false
-                        menuExpanded = false
-
-                    },
-                    text = {
-                        Text(stringResource(R.string.popular_movies))
-                    }
-                )
-                DropdownMenuItem(
-                    onClick = {
-                        // Set the selected movie list to popular
-                        movieDBViewModel.getTopRatedMovies()
-                        // Set the menu expanded state to false
-                        menuExpanded = false
-
-                    },
-                    text = {
-                        Text(stringResource(R.string.top_rated_movies))
-                    }
-                )
-                DropdownMenuItem(
-                    onClick = {
-                        // Set the selected movie list to popular
-                        movieDBViewModel.getSavedMovies()
-                        // Set the menu expanded state to false
-                        menuExpanded = false
-
-                    },
-                    text = {
-                        Text(stringResource(R.string.saved_movies))
-                    }
-                )
-            }
-        },
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {
@@ -128,6 +79,7 @@ fun MovieDBAppBar(
     )
 }
 
+
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun MovieDBApp(
@@ -140,20 +92,16 @@ fun MovieDBApp(
         backStackEntry?.destination?.route ?: MovieDBScreen.List.name
     )
 
-    val movieDBViewModel: MovieDBViewModel = viewModel(factory = MovieDBViewModel.Factory)
-
     Scaffold(
         topBar = {
             MovieDBAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() },
-                movieDBViewModel = movieDBViewModel
+                navigateUp = { navController.navigateUp() }
             )
         }
     ) { innerPadding ->
-
-
+        val movieDBViewModel: MovieDBViewModel = viewModel(factory = MovieDBViewModel.Factory)
         NavHost(
             navController = navController,
             startDestination = MovieDBScreen.List.name,
@@ -175,19 +123,20 @@ fun MovieDBApp(
             }
             composable(route = MovieDBScreen.Detail.name) {
                 MovieDetailScreen(
-                    movieDBViewModel = movieDBViewModel,
+                    selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
                     modifier = Modifier
                 )
             }
-            composable(route = MovieDBScreen.ExpandedDetails.name) {
-                uiState.selectedMovie?.let { movie ->
-                    MovieExpandedDetailScreen(
-                        movieTitle = movie.title,
-                        expandedMovieDetails = movie.expandDetails,
-                        //expandDetails = ,
-                        modifier = Modifier
-                    )
-                }
+//            composable(route = MovieDBScreen.ExpandedDetails.name) {
+//                uiState.selectedMovie?.let { movieDBViewModel.movieListUiState ->
+//                    MovieExpandedDetailScreen(
+//                        movieTitle = movie.title,
+//                        expandedMovieDetails = movie.expandDetails,
+//                        //expandDetails = ,
+//                        modifier = Modifier
+//                    )
+//                }
+//            }
         }
     }
 }

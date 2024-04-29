@@ -1,6 +1,5 @@
 package com.example.themoviedbv24.database
 
-import android.content.Context
 import com.example.themoviedbv24.network.MovieDBApiService
 import com.example.themoviedbv24.utils.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -13,7 +12,7 @@ interface AppContainer {
     val moviesRepository: MoviesRepository
 }
 
-class DefaultAppContainer(private val context: Context) : AppContainer {
+class DefaultAppContainer : AppContainer {
 
     fun getLoggerInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
