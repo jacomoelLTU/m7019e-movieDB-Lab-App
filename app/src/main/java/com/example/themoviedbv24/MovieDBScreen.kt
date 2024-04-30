@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.themoviedbv24.R
 import com.example.themoviedbv24.ui.screens.MovieDetailScreen
 import com.example.themoviedbv24.ui.screens.MovieExpandedDetailScreen
+import com.example.themoviedbv24.ui.screens.MovieGridScreen
 import com.example.themoviedbv24.ui.screens.MovieListScreen
 import com.example.themoviedbv24.viewmodels.MovieDBViewModel
 
@@ -110,7 +111,7 @@ fun MovieDBApp(
                 .padding(innerPadding)
         ) {
             composable(route = MovieDBScreen.List.name) {
-                MovieListScreen(
+                MovieGridScreen(
                     movieListUiState = movieDBViewModel.movieListUiState,
                     onMovieListItemClicked = {
                         movieDBViewModel.setSelectedMovie(it)

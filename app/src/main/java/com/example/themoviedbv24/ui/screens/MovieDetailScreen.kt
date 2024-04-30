@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -69,7 +72,24 @@ fun MovieDetailScreen (
                 ) {
                     Text(text = "Show Expanded Details")
                 }
+
+                // Col woth LazyRow should mby be inside parent Col
             }
+
+            Column (modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+                .verticalScroll(rememberScrollState())
+            ) {
+                LazyRow(
+                    modifier = Modifier
+                        .padding(4.dp)
+                ) {
+
+                }
+
+            }
+
         }
 
         is SelectedMovieUiState.Loading -> {
@@ -88,4 +108,14 @@ fun MovieDetailScreen (
             )
         }
     }
+
+
+@Composable
+fun MovieReviewCard(
+    author: String,
+    reviewContent: String
+) {
+
+}
+
 }
