@@ -17,12 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.themoviedbv24.model.ExpandedMovieDetail
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.ui.theme.TheMovieDBV24Theme
 import com.example.themoviedbv24.utils.Constants

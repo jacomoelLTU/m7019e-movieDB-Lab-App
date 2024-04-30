@@ -1,5 +1,6 @@
 package com.example.themoviedbv24.database
 
+import com.example.themoviedbv24.model.ExpandedMovieDetailsResponse
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.model.MovieResponse
 import com.example.themoviedbv24.network.MovieDBApiService
@@ -7,6 +8,7 @@ import com.example.themoviedbv24.network.MovieDBApiService
 interface MoviesRepository {
     suspend fun getPopularMovies(): MovieResponse
     suspend fun getTopRatedMovies(): MovieResponse
+    suspend fun getExpandedMovieDetails(movie : Movie) : ExpandedMovieDetailsResponse
 }
 
 class NetworkMoviesRepository(private val apiService: MovieDBApiService) : MoviesRepository {
@@ -17,6 +19,10 @@ class NetworkMoviesRepository(private val apiService: MovieDBApiService) : Movie
 
     override suspend fun getTopRatedMovies() : MovieResponse {
         return apiService.getTopRatedMovies()
+    }
+
+    override suspend fun getExpandedMovieDetails(movie: Movie) : ExpandedMovieDetailsResponse {
+        return apiService.getExpandedMovieDetails()
     }
 
 }

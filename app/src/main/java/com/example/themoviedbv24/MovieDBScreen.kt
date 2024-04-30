@@ -128,7 +128,7 @@ fun MovieDBApp(
                 )
             }
 //            composable(route = MovieDBScreen.ExpandedDetails.name) {
-//                uiState.selectedMovie?.let { movieDBViewModel.movieListUiState ->
+//                uiState.selectedMovie?.let { movieDBViewModel.movieListUiState -> //state for third screeen used here
 //                    MovieExpandedDetailScreen(
 //                        movieTitle = movie.title,
 //                        expandedMovieDetails = movie.expandDetails,

@@ -29,6 +29,8 @@ sealed interface SelectedMovieUiState {
     data class Success(val movie: Movie) : SelectedMovieUiState
     object Error : SelectedMovieUiState
     object Loading : SelectedMovieUiState
+
+
 }
 
 
@@ -78,6 +80,19 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository ) : ViewMo
                 SelectedMovieUiState.Error
             } catch (e: HttpException) {
                 SelectedMovieUiState.Error
+            }
+        }
+    }
+
+    fun getExpandedMovieDetails(movie : Movie) {
+        viewModelScope.launch {
+            movieListUiState = MovieListUiState.Loading
+            movieListUiState = try {
+                MovieListUiState.Success(moviesRepository.getExpandedMovieDetails().results)
+            } catch (e: IOException) {
+                MovieListUiState.Error
+            } catch (e: HttpException) {
+                MovieListUiState.Error
             }
         }
     }
