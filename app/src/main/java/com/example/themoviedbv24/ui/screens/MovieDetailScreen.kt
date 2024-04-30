@@ -36,10 +36,10 @@ fun MovieDetailScreen (
     when (selectedMovieUiState) {
 
         is SelectedMovieUiState.Success -> {
-            Column(Modifier.width(IntrinsicSize.Max)) {
-                Box(Modifier.fillMaxWidth().padding(0.dp)) {
+            Column {
+                Box {
                     AsyncImage(
-                        model = Constants.BACKDROP_IMAGE_BASE_URL + Constants.BACKDROP_IMAGE_WIDTH + selectedMovieUiState.movie.backdropPath,
+                        model = Constants.BACKDROP_IMAGE_BASE_URL + Constants.BACKDROP_IMAGE_WIDTH + movie.backdropPath,
                         contentDescription = selectedMovieUiState.movie.title,
                         modifier = modifier,
                         contentScale = ContentScale.Crop
@@ -59,9 +59,16 @@ fun MovieDetailScreen (
                     text = selectedMovieUiState.movie.overview,
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.size(8.dp))
+                Button(
+                    modifier = Modifier.fillMaxWidth(), onClick = {
+                        onExpandDetailsClicked(selectedMovieUiState.movie)
+                    }
+                ) {
+                    Text(text = "Show Expanded Details")
+                }
             }
         }
 
