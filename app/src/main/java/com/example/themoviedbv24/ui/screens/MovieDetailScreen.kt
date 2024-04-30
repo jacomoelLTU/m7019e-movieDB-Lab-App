@@ -39,7 +39,7 @@ fun MovieDetailScreen (
             Column {
                 Box {
                     AsyncImage(
-                        model = Constants.BACKDROP_IMAGE_BASE_URL + Constants.BACKDROP_IMAGE_WIDTH + movie.backdropPath,
+                        model = Constants.BACKDROP_IMAGE_BASE_URL + Constants.BACKDROP_IMAGE_WIDTH + selectedMovieUiState.movie.backdropPath,
                         contentDescription = selectedMovieUiState.movie.title,
                         modifier = modifier,
                         contentScale = ContentScale.Crop

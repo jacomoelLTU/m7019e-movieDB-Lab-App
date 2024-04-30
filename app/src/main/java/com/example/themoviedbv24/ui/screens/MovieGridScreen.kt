@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,18 +29,21 @@ import com.example.themoviedbv24.viewmodels.MovieListUiState
 
 
 @Composable
-fun MovieListScreen(
+fun MovieGridScreen(
     movieListUiState : MovieListUiState,
     onMovieListItemClicked: (Movie) -> Unit,
     modifier: Modifier = Modifier
 )
 {
-    LazyColumn(modifier = modifier) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 64.dp),
+        modifier = modifier
+    ) {
 
         when (movieListUiState) {
             is MovieListUiState.Success -> {
                 items(movieListUiState.movies) { movie ->
-                    MovieListItemCard(
+                    MovieGridItemCard(
                         movie = movie,
                         onMovieListItemClicked,
                         modifier = Modifier.padding(8.dp)
@@ -72,17 +78,17 @@ fun MovieListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieListItemCard(
+fun MovieGridItemCard(
     movie: Movie,
     onMovieListItemClicked: (Movie) -> Unit,
     modifier: Modifier = Modifier
 )
 {
     Card(modifier = modifier,
-         onClick = {
-             onMovieListItemClicked(movie)
-         }
-        ) {
+        onClick = {
+            onMovieListItemClicked(movie)
+        }
+    ) {
         Row {
             Box {
                 AsyncImage(

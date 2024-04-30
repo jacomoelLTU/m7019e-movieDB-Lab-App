@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MovieResponse(
-
     @SerialName(value = "page")
     var page: Int = 0,
 

@@ -13,6 +13,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.themoviedbv24.MovieDBApplication
 import com.example.themoviedbv24.database.MoviesRepository
+
+import com.example.themoviedbv24.model.ExpandedMovieDetails
 import com.example.themoviedbv24.model.Movie
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -26,7 +28,9 @@ sealed interface MovieListUiState {
 }
 
 sealed interface SelectedMovieUiState {
-    data class Success(val movie: Movie) : SelectedMovieUiState
+    data class Success(val movie: Movie, val expandedMovieDetails: ExpandedMovieDetails
+    ) : SelectedMovieUiState
+
     object Error : SelectedMovieUiState
     object Loading : SelectedMovieUiState
 
@@ -71,24 +75,13 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository ) : ViewMo
         }
     }
 
-    fun getExpandedMovieDetails(movie : Movie) {
-        viewModelScope.launch {
-            movieListUiState = MovieListUiState.Loading
-            movieListUiState = try {
-                MovieListUiState.Success(moviesRepository.getExpandedMovieDetails(movie).results)
-            } catch (e: IOException) {
-                MovieListUiState.Error
-            } catch (e: HttpException) {
-                MovieListUiState.Error
-            }
-        }
-    }
 
     fun setSelectedMovie(movie: Movie) {
         viewModelScope.launch {
             selectedMovieUiState = SelectedMovieUiState.Loading
-            selectedMovieUiState = try {
-                SelectedMovieUiState.Success(movie)
+            try {
+                val details = moviesRepository.getExpandedMovieDetails(movie.id)
+                selectedMovieUiState = SelectedMovieUiState.Success(movie, details)
             } catch (e: IOException) {
                 SelectedMovieUiState.Error
             } catch (e: HttpException) {

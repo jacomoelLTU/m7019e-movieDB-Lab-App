@@ -39,7 +39,7 @@ fun MovieExpandedDetailScreen (
         is SelectedMovieUiState.Success -> {
             Column {
                 Box (
-                    modifier = androidx.compose.ui.Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 16.dp),
                     //.background(MaterialTheme.colorScheme.onPrimary),
@@ -56,14 +56,14 @@ fun MovieExpandedDetailScreen (
                     )
                 }
                 Text(
-                    text = "Tag line: " + selectedMovieUiState.movie.tagline,
+                    text = "Tag line: " + selectedMovieUiState.expandedMovieDetails.tagline,
                     style = MaterialTheme.typography.bodyLarge,
                     fontSize = 18.sp,
                     maxLines = 2,
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
-                    text = "release status: " + selectedMovieUiState.movie.status,
+                    text = "release status: " + selectedMovieUiState.expandedMovieDetails.status,
                     style = MaterialTheme.typography.bodyLarge,
                     fontSize = 18.sp,
                     maxLines = 1,
@@ -78,8 +78,10 @@ fun MovieExpandedDetailScreen (
                     LazyRow (
                         modifier = Modifier.padding(4.dp)
                     ) {
-                        items(selectedMovieUiState.movie.genres) { genre ->
-                            GenreCard(genre = genre)
+                        selectedMovieUiState.expandedMovieDetails.genres?.let { genresList ->
+                            items(genresList) {genre ->
+                                GenreCards(genre = genre.name)
+                            }
                         }
                     }
                 }
@@ -88,11 +90,11 @@ fun MovieExpandedDetailScreen (
                     modifier = Modifier.padding(8.dp)
                 ) {
                     BrowserButton(
-                        selectedMovieUiState.movie.homePageUrl,
+                        selectedMovieUiState.expandedMovieDetails.homePageUrl,
                         Modifier.weight(1f)
                     )
                     ImdbButton(
-                        imdb_id = Constants.IMDB_BASE_URL + selectedMovieUiState.movie.imdbId,
+                        imdb_id = Constants.IMDB_BASE_URL + selectedMovieUiState.expandedMovieDetails.imdbId,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -120,16 +122,16 @@ fun MovieExpandedDetailScreen (
 }
 
 @Composable
-fun GenreCard(genre: Genre) {
+fun GenreCards(genre: String) {
     Surface (
         color = Color.LightGray,
         shadowElevation = 4.dp,
-        modifier = androidx.compose.ui.Modifier.padding(8.dp)
+        modifier = Modifier.padding(8.dp)
     ) {
         Text(
-            text = genre.name,
+            text = genre,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = androidx.compose.ui.Modifier.padding(8.dp)
+            modifier = Modifier.padding(8.dp)
         )
 
     }
@@ -138,7 +140,7 @@ fun GenreCard(genre: Genre) {
 @Composable
 fun BrowserButton (
     homePageUrl: String?,
-    modifier: androidx.compose.ui.Modifier
+    modifier: Modifier
 ) {
     val context = LocalContext.current
     if (homePageUrl != null) {
@@ -160,7 +162,7 @@ fun BrowserButton (
 @Composable
 fun ImdbButton (
     imdb_id: String,
-    modifier: androidx.compose.ui.Modifier
+    modifier: Modifier
 ) {
     val context = LocalContext.current
     Button(

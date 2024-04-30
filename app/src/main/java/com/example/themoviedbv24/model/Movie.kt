@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Movie(
-
     @SerialName(value = "id")
     var id: Long = 0L,
 
@@ -24,19 +23,6 @@ data class Movie(
     @SerialName(value = "overview")
     var overview: String,
 
-    //Expanded Details
-    @SerialName(value = "genres")
-    var genres: List<Genre>?  = mutableListOf(),
-
-    @SerialName(value = "status")
-    var status: String = "",
-
-    @SerialName(value = "tagline")
-    var tagline: String? = null,
-
-    @SerialName(value = "homepage")
-    var homePageUrl: String? = null,
-
-    @SerialName(value = "imdb_id")
-    var imdbId: String
 )
+
+
