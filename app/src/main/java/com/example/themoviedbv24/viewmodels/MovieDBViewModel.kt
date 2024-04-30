@@ -71,6 +71,19 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository ) : ViewMo
         }
     }
 
+    fun getExpandedMovieDetails(movie : Movie) {
+        viewModelScope.launch {
+            movieListUiState = MovieListUiState.Loading
+            movieListUiState = try {
+                MovieListUiState.Success(moviesRepository.getExpandedMovieDetails(movie).results)
+            } catch (e: IOException) {
+                MovieListUiState.Error
+            } catch (e: HttpException) {
+                MovieListUiState.Error
+            }
+        }
+    }
+
     fun setSelectedMovie(movie: Movie) {
         viewModelScope.launch {
             selectedMovieUiState = SelectedMovieUiState.Loading
@@ -84,18 +97,7 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository ) : ViewMo
         }
     }
 
-    fun getExpandedMovieDetails(movie : Movie) {
-        viewModelScope.launch {
-            movieListUiState = MovieListUiState.Loading
-            movieListUiState = try {
-                MovieListUiState.Success(moviesRepository.getExpandedMovieDetails().results)
-            } catch (e: IOException) {
-                MovieListUiState.Error
-            } catch (e: HttpException) {
-                MovieListUiState.Error
-            }
-        }
-    }
+
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

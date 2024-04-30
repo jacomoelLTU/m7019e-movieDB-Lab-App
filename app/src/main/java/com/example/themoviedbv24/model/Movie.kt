@@ -26,7 +26,7 @@ data class Movie(
 
     //Expanded Details
     @SerialName(value = "genres")
-    var genres: MutableList<String> = mutableListOf(),
+    var genres: List<Genre>?  = mutableListOf(),
 
     @SerialName(value = "status")
     var status: String = "",

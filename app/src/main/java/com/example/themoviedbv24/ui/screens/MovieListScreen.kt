@@ -119,31 +119,20 @@ fun MovieListItemCard(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MovieItemPreview() {
-    TheMovieDBV24Theme {
-        MovieListItemCard(
-            movie = Movie(
-                2,
-                "Road House",
-                "/bXi6IQiQDHD00JFio5ZSZOeRSBh.jpg",
-                "/9c0lHTXRqDBxeOToVzRu0GArSne.jpg",
-                "2024-03-08",
-                "Ex-UFC fighter Dalton takes a job as a bouncer at a Florida Keys " +
-                        "roadhouse, only to discover that this paradise is not all it seems.",
-//                ExpandedMovieDetail(
-//                    //2,
-//                    mutableListOf(
-//                        "Action",
-//                        "Thriller"
-//                    ),
-//                    "Released",
-//                    "Take it outside.",
-//                    "https://www.amazon.com/gp/video/detail/B0CH5YQPZQ",
-//                    "tt3359350"
-//                )
-            ), {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun MovieItemPreview() {
+//    TheMovieDBV24Theme {
+//        MovieListItemCard(
+//            movie = Movie(
+//                2,
+//                "Road House",
+//                "/bXi6IQiQDHD00JFio5ZSZOeRSBh.jpg",
+//                "/9c0lHTXRqDBxeOToVzRu0GArSne.jpg",
+//                "2024-03-08",
+//                "Ex-UFC fighter Dalton takes a job as a bouncer at a Florida Keys " +
+//                        "roadhouse, only to discover that this paradise is not all it seems."
+//            ), {}
+//        )
+//    }
+//}

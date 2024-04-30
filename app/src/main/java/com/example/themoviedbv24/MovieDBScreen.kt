@@ -124,19 +124,20 @@ fun MovieDBApp(
             composable(route = MovieDBScreen.Detail.name) {
                 MovieDetailScreen(
                     selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
-                    modifier = Modifier
+                    modifier = Modifier,
+                    onExpandDetailsClicked = {
+                        movieDBViewModel.setSelectedMovie(it)
+                        navController.navigate(MovieDBScreen.ExpandedDetails.name)
+                    }
                 )
             }
-//            composable(route = MovieDBScreen.ExpandedDetails.name) {
-//                uiState.selectedMovie?.let { movieDBViewModel.movieListUiState -> //state for third screeen used here
-//                    MovieExpandedDetailScreen(
-//                        movieTitle = movie.title,
-//                        expandedMovieDetails = movie.expandDetails,
-//                        //expandDetails = ,
-//                        modifier = Modifier
-//                    )
-//                }
-//            }
-        }
+            composable(route = MovieDBScreen.ExpandedDetails.name) {
+                     //state for third screeen used here
+                    MovieExpandedDetailScreen(
+                        selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
+                        modifier = Modifier
+                    )
+                }
+            }
     }
 }

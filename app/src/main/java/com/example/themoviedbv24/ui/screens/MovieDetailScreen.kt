@@ -28,9 +28,9 @@ import com.example.themoviedbv24.viewmodels.SelectedMovieUiState
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun MovieDetailScreen (
-    selectedMovieUiState: SelectedMovieUiState,
-    //onExpandDetailsClicked: () -> Unit,
-    modifier: Modifier = Modifier,
+    selectedMovieUiState : SelectedMovieUiState,
+    onExpandDetailsClicked : (Movie) -> Unit,
+    modifier : Modifier = Modifier,
 ) {
 
     when (selectedMovieUiState) {
@@ -80,7 +80,5 @@ fun MovieDetailScreen (
                 modifier = Modifier.padding(16.dp)
             )
         }
-
     }
-
 }

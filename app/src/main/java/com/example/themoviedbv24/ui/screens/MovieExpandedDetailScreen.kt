@@ -17,91 +17,117 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.themoviedbv24.model.ExpandedMovieDetailsResponse
+import com.example.themoviedbv24.model.Genre
+import com.example.themoviedbv24.model.Movie
+
 import com.example.themoviedbv24.utils.Constants
+import com.example.themoviedbv24.viewmodels.SelectedMovieUiState
 
 @Composable
 fun MovieExpandedDetailScreen (
-    movieTitle: String,
-    expandedMovieDetails: ExpandedMovieDetailsResponse,
-    modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier,
+    selectedMovieUiState: SelectedMovieUiState,
+    modifier : Modifier = Modifier,
 ) {
-    Column {
-        Box (
-            modifier = androidx.compose.ui.Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-                //.background(MaterialTheme.colorScheme.onPrimary),
-            contentAlignment = Alignment.Center,
+    when (selectedMovieUiState) {
 
-        ) {
-            Text(
-                text = movieTitle,
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = 52.sp,
-                maxLines = 1,
-                textAlign = TextAlign.Center,
-                modifier = androidx.compose.ui.Modifier.fillMaxWidth()
-            )
-        }
-        Text(
-            text = "Tag line: " + expandedMovieDetails.tagline,
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = 18.sp,
-            maxLines = 2,
-        )
-        Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
-        Text(
-            text = "release status: " + expandedMovieDetails.status,
-            style = MaterialTheme.typography.bodyLarge,
-            fontSize = 18.sp,
-            maxLines = 1,
-        )
-        Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
-        Column {
-            Text(
-                text = "Genres",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = androidx.compose.ui.Modifier.padding(bottom = 4.dp)
-            )
-            LazyRow (
-                modifier = androidx.compose.ui.Modifier.padding(4.dp)
-            ) {
-                items(expandedMovieDetails.genres) { genre ->
-                    GenreCard(genre = genre)
+        is SelectedMovieUiState.Success -> {
+            Column {
+                Box (
+                    modifier = androidx.compose.ui.Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    //.background(MaterialTheme.colorScheme.onPrimary),
+                    contentAlignment = Alignment.Center,
+
+                    ) {
+                    Text(
+                        text = selectedMovieUiState.movie.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 52.sp,
+                        maxLines = 1,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Text(
+                    text = "Tag line: " + selectedMovieUiState.movie.tagline,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 18.sp,
+                    maxLines = 2,
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = "release status: " + selectedMovieUiState.movie.status,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Column {
+                    Text(
+                        text = "Genres",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    LazyRow (
+                        modifier = Modifier.padding(4.dp)
+                    ) {
+                        items(selectedMovieUiState.movie.genres) { genre ->
+                            GenreCard(genre = genre)
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.size(8.dp))
+                Row (
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    BrowserButton(
+                        selectedMovieUiState.movie.homePageUrl,
+                        Modifier.weight(1f)
+                    )
+                    ImdbButton(
+                        imdb_id = Constants.IMDB_BASE_URL + selectedMovieUiState.movie.imdbId,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
-        Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
-        Row (
-            modifier = androidx.compose.ui.Modifier.padding(8.dp)
-        ) {
-            BrowserButton(
-                expandedMovieDetails.homePageUrl,
-                androidx.compose.ui.Modifier.weight(1f)
-            )
-            ImdbButton(
-                imdb_id = Constants.IMDB_BASE_URL + expandedMovieDetails.imdbId,
-                modifier = androidx.compose.ui.Modifier.weight(1f)
+
+        is SelectedMovieUiState.Loading -> {
+            Text(
+                text = "Loading..",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(16.dp)
             )
         }
+
+        is SelectedMovieUiState.Error -> {
+            Text(
+                text = "Error...",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
     }
+
 }
 
 @Composable
-fun GenreCard(genre: String) {
+fun GenreCard(genre: Genre) {
     Surface (
         color = Color.LightGray,
         shadowElevation = 4.dp,
         modifier = androidx.compose.ui.Modifier.padding(8.dp)
     ) {
         Text(
-            text = genre,
+            text = genre.name,
             style = MaterialTheme.typography.bodyMedium,
             modifier = androidx.compose.ui.Modifier.padding(8.dp)
         )
