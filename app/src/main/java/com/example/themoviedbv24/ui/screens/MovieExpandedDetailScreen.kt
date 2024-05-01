@@ -46,7 +46,7 @@ fun MovieExpandedDetailScreen (
                     contentAlignment = Alignment.Center,
 
                     ) {
-                    Text(
+                    Text( //TODO: change to modular composable like MovieReviewLazyRow
                         text = selectedMovieUiState.movie.title,
                         style = MaterialTheme.typography.bodyLarge,
                         fontSize = 52.sp,
@@ -55,14 +55,14 @@ fun MovieExpandedDetailScreen (
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                Text(
+                Text( //TODO: change to modular composable like MovieReviewLazyRow
                     text = "Tag line: " + selectedMovieUiState.expandedMovieDetails.tagline,
                     style = MaterialTheme.typography.bodyLarge,
                     fontSize = 18.sp,
                     maxLines = 2,
                 )
                 Spacer(modifier = Modifier.size(8.dp))
-                Text(
+                Text( //TODO: change to modular composable like MovieReviewLazyRow
                     text = "release status: " + selectedMovieUiState.expandedMovieDetails.status,
                     style = MaterialTheme.typography.bodyLarge,
                     fontSize = 18.sp,
@@ -70,12 +70,12 @@ fun MovieExpandedDetailScreen (
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 Column {
-                    Text(
+                    Text( //TODO: change to modular composable like MovieReviewLazyRow
                         text = "Genres",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
-                    LazyRow (
+                    LazyRow ( //TODO: change to modular composable like MovieReviewLazyRow
                         modifier = Modifier.padding(4.dp)
                     ) {
                         selectedMovieUiState.expandedMovieDetails.genres?.let { genresList ->

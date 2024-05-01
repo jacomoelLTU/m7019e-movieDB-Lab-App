@@ -18,6 +18,7 @@ import com.example.themoviedbv24.model.ExpandedMovieDetails
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.model.MovieReview
 import com.example.themoviedbv24.model.MovieReviewResponse
+import com.example.themoviedbv24.model.MovieVideoResponse
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -32,7 +33,8 @@ sealed interface MovieListUiState {
 sealed interface SelectedMovieUiState {
     data class Success(val movie: Movie,
                        val expandedMovieDetails: ExpandedMovieDetails,
-                       val movieReviewResponse: MovieReviewResponse
+                       val movieReviewResponse: MovieReviewResponse,
+                       val movieVideoResponse: MovieVideoResponse
     ) : SelectedMovieUiState
 
     object Error : SelectedMovieUiState
@@ -86,7 +88,8 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository ) : ViewMo
             try {
                 val details = moviesRepository.getExpandedMovieDetails(movie.id)
                 val reviews = moviesRepository.getMovieReviews(movie.id)
-                selectedMovieUiState = SelectedMovieUiState.Success(movie, details, reviews)
+                val videos = moviesRepository.getMovieVideos(movie.id)
+                selectedMovieUiState = SelectedMovieUiState.Success(movie, details, reviews, videos)
             } catch (e: IOException) {
                 SelectedMovieUiState.Error
             } catch (e: HttpException) {
