@@ -14,6 +14,10 @@ data class MovieReviewResponse(
     @SerialName(value = "total_pages")
     var total_pages: Int = 0,
 
+    @SerialName(value = "results")
+    var results: List<MovieReview> = listOf(),
+
     @SerialName(value = "total_results")
     var total_results: Int = 0
+
 )

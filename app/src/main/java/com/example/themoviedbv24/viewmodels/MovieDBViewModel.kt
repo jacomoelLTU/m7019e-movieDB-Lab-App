@@ -17,6 +17,7 @@ import com.example.themoviedbv24.database.MoviesRepository
 import com.example.themoviedbv24.model.ExpandedMovieDetails
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.model.MovieReview
+import com.example.themoviedbv24.model.MovieReviewResponse
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -31,7 +32,7 @@ sealed interface MovieListUiState {
 sealed interface SelectedMovieUiState {
     data class Success(val movie: Movie,
                        val expandedMovieDetails: ExpandedMovieDetails,
-                       val movieReview: MovieReview
+                       val movieReviewResponse: MovieReviewResponse
     ) : SelectedMovieUiState
 
     object Error : SelectedMovieUiState

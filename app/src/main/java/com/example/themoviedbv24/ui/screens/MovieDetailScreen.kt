@@ -5,15 +5,19 @@ import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.themoviedbv24.model.Movie
+import com.example.themoviedbv24.model.MovieReview
 import com.example.themoviedbv24.utils.Constants
 import com.example.themoviedbv24.viewmodels.MovieDBViewModel
 import com.example.themoviedbv24.viewmodels.SelectedMovieUiState
@@ -73,21 +78,23 @@ fun MovieDetailScreen (
                     Text(text = "Show Expanded Details")
                 }
 
-                // Col woth LazyRow should mby be inside parent Col
-            }
-
-            Column (modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp)
-                .verticalScroll(rememberScrollState())
-            ) {
-                LazyRow(
-                    modifier = Modifier
-                        .padding(4.dp)
+                Column (modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+                    .verticalScroll(rememberScrollState())
                 ) {
-
+                    LazyRow(
+                        modifier = Modifier
+                            .padding(4.dp)
+                    ) {
+                        selectedMovieUiState.movieReviewResponse.results?.let { reviewList ->
+                            items(reviewList) {review ->
+                                MovieReviewCard(review)
+                            }
+                        }
+                    }
                 }
-
+                // Col woth LazyRow should mby be inside parent Col
             }
 
         }
@@ -108,14 +115,37 @@ fun MovieDetailScreen (
             )
         }
     }
-
+}
 
 @Composable
 fun MovieReviewCard(
-    author: String,
-    reviewContent: String
+    movieReview: MovieReview
 ) {
-
-}
-
+    Card(modifier = Modifier
+        .height(64.dp)
+        .padding(8.dp)
+    ) {
+        Row(modifier = Modifier
+            .height(16.dp)
+            .fillMaxWidth()
+            .padding(4.dp)
+        ) {
+            Text(
+                text = movieReview.author,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1
+            )
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Row(modifier = Modifier
+            .height(32.dp)
+            .fillMaxWidth()
+            .padding(4.dp)
+        ) {
+            Text(
+                text = movieReview.content,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
 }
