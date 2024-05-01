@@ -131,7 +131,8 @@ fun MovieReviewCard(
         Card(modifier = Modifier
             .height(120.dp) //TODO: change this to expand to max height() through an expand button
             .width(getReviewCardScreenWidth())
-            .padding(4.dp),
+            .padding(horizontal = 8.dp)
+            .padding(vertical = 4.dp),
             elevation = CardDefaults.cardElevation(4.dp)
         ) {
             Column(modifier = Modifier
