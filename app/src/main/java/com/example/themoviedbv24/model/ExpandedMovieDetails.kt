@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class ExpandedMovieDetails(
 
     @SerialName(value = "genres")
-    var genres: List<Genre>? = null, //mby needs to be of som genre object type
+    var genres: List<Genre> = listOf(), //mby needs to be of som genre object type
 
     @SerialName(value = "status")
     var status: String = "",
