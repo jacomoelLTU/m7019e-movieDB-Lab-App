@@ -3,4 +3,7 @@
     <string name="movie_detail">Movie Detail</string>
     <string name="movie_detail_expanded">Expanded Movie Details</string>
     <string name="back_button">back</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="saved_movies">saved movies</string>
 </resources>

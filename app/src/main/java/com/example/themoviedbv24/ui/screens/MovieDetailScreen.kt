@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -40,16 +42,19 @@ import com.example.themoviedbv24.model.MovieVideo
 import com.example.themoviedbv24.ui.uiHelper.getReviewCardScreenWidth
 import com.example.themoviedbv24.ui.uiHelper.getScreenWidth
 import com.example.themoviedbv24.utils.Constants
+import com.example.themoviedbv24.viewmodels.MovieDBViewModel
 import com.example.themoviedbv24.viewmodels.SelectedMovieUiState
 
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun MovieDetailScreen (
-    selectedMovieUiState : SelectedMovieUiState,
+    //selectedMovieUiState : SelectedMovieUiState,
+    movieDBViewModel: MovieDBViewModel,
     onExpandDetailsClicked : (Movie) -> Unit,
     modifier : Modifier = Modifier,
 ) {
+    val selectedMovieUiState = movieDBViewModel.selectedMovieUiState
 
     when (selectedMovieUiState) {
 
@@ -79,6 +84,21 @@ fun MovieDetailScreen (
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
+
+                Spacer(modifier = Modifier.size(8.dp))
+                Row () {
+                    Text(
+                        text = "Favorite",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Switch (checked = selectedMovieUiState.isFavorite, onCheckedChange = {
+                        if (it) {
+                            movieDBViewModel.saveMovie(selectedMovieUiState.movie)
+                        } else {
+                            movieDBViewModel.deleteMovie(selectedMovieUiState.movie)
+                        }
+                    })
+                }
 
                 Button(  //TODO: change to modular composable like MovieReviewLazyRow
                     modifier = Modifier
