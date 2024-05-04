@@ -1,6 +1,7 @@
 package com.example.themoviedbv24.database
 
 import com.example.themoviedbv24.model.ExpandedMovieDetails
+import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.model.MovieResponse
 import com.example.themoviedbv24.model.MovieReviewResponse
 import com.example.themoviedbv24.model.MovieVideoResponse
@@ -39,24 +40,24 @@ class NetworkMoviesRepository(private val apiService: MovieDBApiService) : Movie
 
 }
 
-//interface SavedMoviesRepository {
-//    suspend fun getSavedMovies(): List<Movie>
-//    suspend fun insertMovie(movie: Movie)
-//    suspend fun getMovie(id: Long): Movie
-//    suspend fun deleteMovie(movie: Movie)
-//}
+interface SavedMoviesRepository {
+    suspend fun getSavedMovies(): List<Movie>
+    suspend fun insertMovie(movie: Movie)
+    suspend fun getMovie(id: Long): Movie
+    suspend fun deleteMovie(movie: Movie)
+}
 
-//class FavoriteMoviesRepository(private val movieDao: MovieDao) : SavedMoviesRepository {
-//    override suspend fun getSavedMovies(): List<Movie> {
-//        return movieDao.getFavoriteMovies()
-//    }
-//    override suspend fun insertMovie(movie: Movie) {
-//        movieDao.insertFavoriteMovie(movie)
-//    }
-//    override suspend fun getMovie(id: Long): Movie {
-//        return movieDao.getMovie(id)
-//    }
-//    override suspend fun deleteMovie(movie: Movie) {
-//        movieDao.deleteFavoriteMovie(movie.id)
-//    }
-//}
+class FavoriteMoviesRepository(private val movieDao: MovieDao) : SavedMoviesRepository {
+    override suspend fun getSavedMovies(): List<Movie> {
+        return movieDao.getFavoriteMovies()
+    }
+    override suspend fun insertMovie(movie: Movie) {
+        movieDao.insertFavoriteMovie(movie)
+    }
+    override suspend fun getMovie(id: Long): Movie {
+        return movieDao.getMovie(id)
+    }
+    override suspend fun deleteMovie(movie: Movie) {
+        movieDao.deleteFavoriteMovie(movie.id)
+    }
+}
