@@ -1,13 +1,20 @@
 package com.example.themoviedbv24.database
 
+import android.content.Context
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.themoviedbv24.model.ExpandedMovieDetails
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.model.MovieResponse
 import com.example.themoviedbv24.model.MovieReviewResponse
 import com.example.themoviedbv24.model.MovieVideoResponse
 import com.example.themoviedbv24.network.MovieDBApiService
+import com.example.themoviedbv24.workers.CacheWorker
 
 interface MoviesRepository {
+
+    var latestFetch: MutableList<Movie>
+
     suspend fun getPopularMovies(): MovieResponse
     suspend fun getTopRatedMovies(): MovieResponse
     suspend fun getExpandedMovieDetails(movieId: Long): ExpandedMovieDetails
@@ -16,13 +23,24 @@ interface MoviesRepository {
     suspend fun getMovieVideos(movieId: Long): MovieVideoResponse
 }
 
-class NetworkMoviesRepository(private val apiService: MovieDBApiService) : MoviesRepository {
+class NetworkMoviesRepository(context: Context, private val apiService: MovieDBApiService) : MoviesRepository {
 
-    override suspend fun getPopularMovies() : MovieResponse {
+    private val workManager = WorkManager.getInstance(context)
+    override var latestFetch = mutableListOf<Movie>()
+
+    override suspend fun getPopularMovies(): MovieResponse {
+        this.latestFetch = apiService.getPopularMovies().results.toMutableList()
+        val cacheWorker = OneTimeWorkRequestBuilder<CacheWorker>()
+            .build()
+        workManager.enqueue(cacheWorker)
         return apiService.getPopularMovies()
     }
 
-    override suspend fun getTopRatedMovies() : MovieResponse {
+    override suspend fun getTopRatedMovies(): MovieResponse {
+        latestFetch = apiService.getTopRatedMovies().results.toMutableList()
+        val cacheWorker = OneTimeWorkRequestBuilder<CacheWorker>()
+            .build()
+        workManager.enqueue(cacheWorker)
         return apiService.getTopRatedMovies()
     }
 
@@ -41,23 +59,47 @@ class NetworkMoviesRepository(private val apiService: MovieDBApiService) : Movie
 }
 
 interface SavedMoviesRepository {
-    suspend fun getSavedMovies(): List<Movie>
     suspend fun insertMovie(movie: Movie)
+
     suspend fun getMovie(id: Long): Movie
-    suspend fun deleteMovie(movie: Movie)
+
+    suspend fun getMovies(): List<Movie>
+
+    suspend fun favoriteMovie(movie: Movie)
+
+    suspend fun unfavoriteMovie(id: Long)
+
+    suspend fun getFavoriteMovies(): List<Movie>
+
+    suspend fun decacheMovies()
 }
 
-class FavoriteMoviesRepository(private val movieDao: MovieDao) : SavedMoviesRepository {
-    override suspend fun getSavedMovies(): List<Movie> {
-        return movieDao.getFavoriteMovies()
-    }
+class LocalMoviesRepository(private val movieDao: MovieDao) : SavedMoviesRepository {
     override suspend fun insertMovie(movie: Movie) {
-        movieDao.insertFavoriteMovie(movie)
+        movieDao.insertMovie(movie)
     }
+
     override suspend fun getMovie(id: Long): Movie {
         return movieDao.getMovie(id)
     }
-    override suspend fun deleteMovie(movie: Movie) {
-        movieDao.deleteFavoriteMovie(movie.id)
+
+    override suspend fun getMovies(): List<Movie> {
+        return movieDao.getCachedMovies()
+    }
+
+    override suspend fun favoriteMovie(movie: Movie) {
+        movieDao.insertMovie(movie)
+    }
+
+    override suspend fun unfavoriteMovie(id: Long) {
+        movieDao.unfavoriteMovie(id)
+    }
+
+    override suspend fun getFavoriteMovies(): List<Movie> {
+        return movieDao.getFavoriteMovies()
+    }
+
+    override suspend fun decacheMovies() {
+        movieDao.decacheMovies()
     }
 }

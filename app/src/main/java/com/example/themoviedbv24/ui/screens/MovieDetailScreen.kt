@@ -91,11 +91,11 @@ fun MovieDetailScreen (
                         text = "Favorite",
                         style = MaterialTheme.typography.bodyLarge
                     )
-                    Switch (checked = selectedMovieUiState.isFavorite, onCheckedChange = {
+                    Switch (checked = selectedMovieUiState.movie.isFavorite, onCheckedChange = {
                         if (it) {
-                            movieDBViewModel.saveMovie(selectedMovieUiState.movie)
+                            movieDBViewModel.favoriteMovie(selectedMovieUiState.movie)
                         } else {
-                            movieDBViewModel.deleteMovie(selectedMovieUiState.movie)
+                            movieDBViewModel.unfavoriteMovie(selectedMovieUiState.movie)
                         }
                     })
                 }

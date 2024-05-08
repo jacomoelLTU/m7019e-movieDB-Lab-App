@@ -12,7 +12,7 @@ import retrofit2.Retrofit
 
 interface AppContainer {
     val moviesRepository: MoviesRepository
-    val savedMoviesRepository: SavedMoviesRepository
+    val localMoviesRepository: SavedMoviesRepository
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
@@ -43,12 +43,12 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
         retrofit.create(MovieDBApiService::class.java)
     }
 
-     override val moviesRepository: MoviesRepository by lazy {
+     override val moviesRepository: NetworkMoviesRepository by lazy {
         NetworkMoviesRepository(retrofitService)
     }
 
 
-    override val savedMoviesRepository: SavedMoviesRepository by lazy {
+    override val localMoviesRepository: SavedMoviesRepository by lazy {
         FavoriteMoviesRepository(MovieDatabase.getDatabase(context = context).movieDao())
     }
 

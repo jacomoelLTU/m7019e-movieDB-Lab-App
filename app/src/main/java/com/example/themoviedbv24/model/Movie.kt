@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 //same class can be Serializable and Entity
 
 @Serializable
-@Entity(tableName = "favorite_movies")
+@Entity(tableName = "movies")
 data class Movie(
 
     @PrimaryKey
@@ -29,6 +29,10 @@ data class Movie(
 
     @SerialName(value = "overview")
     var overview: String,
+
+    var isFavorite: Boolean = false,
+
+    var isCached: Boolean = false,
 
 )
 

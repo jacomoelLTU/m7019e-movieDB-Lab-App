@@ -35,9 +35,7 @@ sealed interface SelectedMovieUiState {
                        val expandedMovieDetails: ExpandedMovieDetails,
                        val movieReviewResponse: MovieReviewResponse,
                        val movieVideoResponse: MovieVideoResponse,
-                       val isFavorite: Boolean,
     ) : SelectedMovieUiState
-
     object Error : SelectedMovieUiState
     object Loading : SelectedMovieUiState
 
@@ -46,7 +44,10 @@ sealed interface SelectedMovieUiState {
 
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-class MovieDBViewModel(private val moviesRepository: MoviesRepository, private val savedMoviesRepository: SavedMoviesRepository) : ViewModel() {
+class MovieDBViewModel(private val moviesRepository: MoviesRepository,
+                       private val localMoviesRepository: SavedMoviesRepository
+    ) : ViewModel() {
+
     var movieListUiState: MovieListUiState by mutableStateOf(MovieListUiState.Loading)
         private set
     var selectedMovieUiState: SelectedMovieUiState by mutableStateOf(SelectedMovieUiState.Loading)
@@ -60,7 +61,8 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository, private v
         viewModelScope.launch {
             movieListUiState = MovieListUiState.Loading
             movieListUiState = try {
-                MovieListUiState.Success(moviesRepository.getTopRatedMovies().results)
+                val fetchedMovies =  moviesRepository.getTopRatedMovies().results
+                MovieListUiState.Success(fetchedMovies)
             } catch (e: IOException) {
                 MovieListUiState.Error
             } catch (e: HttpException) {
@@ -73,7 +75,8 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository, private v
         viewModelScope.launch {
             movieListUiState = MovieListUiState.Loading
             movieListUiState = try {
-                MovieListUiState.Success(moviesRepository.getPopularMovies().results)
+                val fetchedMovies =  moviesRepository.getPopularMovies().results
+                MovieListUiState.Success(fetchedMovies)
             } catch (e: IOException) {
                 MovieListUiState.Error
             } catch (e: HttpException) {
@@ -82,16 +85,32 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository, private v
         }
     }
 
-    fun getSavedMovies(){
+    fun getCachedMovies(){
         viewModelScope.launch {
             movieListUiState = MovieListUiState.Loading
             movieListUiState = try {
-                MovieListUiState.Success(savedMoviesRepository.getSavedMovies())
+                MovieListUiState.Success(localMoviesRepository.getMovies())
             } catch (e: IOException) {
                 MovieListUiState.Error
             } catch (e: HttpException) {
                 MovieListUiState.Error
             }
+        }
+    }
+
+    fun favoriteMovie(movie: Movie, details: ExpandedMovieDetails, reviews: MovieReviewResponse, videos: MovieVideoResponse) {
+        movie.isFavorite = true
+        viewModelScope.launch {
+            localMoviesRepository.insertMovie(movie)
+            selectedMovieUiState = SelectedMovieUiState.Success(movie, ExpandedMovieDetails(), MovieReviewResponse(), MovieVideoResponse())
+        }
+    }
+
+    fun unfavoriteMovie(movie: Movie, details: ExpandedMovieDetails, reviews: MovieReviewResponse, videos: MovieVideoResponse) {
+        movie.isFavorite = false
+        viewModelScope.launch {
+            localMoviesRepository.unfavoriteMovie(movie.id)
+            selectedMovieUiState = SelectedMovieUiState.Success(movie, ExpandedMovieDetails(), MovieReviewResponse(), MovieVideoResponse())
         }
     }
 
@@ -105,8 +124,8 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository, private v
                 selectedMovieUiState = SelectedMovieUiState.Success(movie,
                                                                     details,
                                                                     reviews,
-                                                                    videos,
-                                                            savedMoviesRepository.getMovie(movie.id) != null)
+                                                                    videos
+                                                                    )
             } catch (e: IOException) {
                 SelectedMovieUiState.Error
             } catch (e: HttpException) {
@@ -115,29 +134,27 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository, private v
         }
     }
 
-    fun saveMovie(movie: Movie) {
-        viewModelScope.launch{
-            savedMoviesRepository.insertMovie(movie)
-            selectedMovieUiState = SelectedMovieUiState.Success(movie,
-                                                                moviesRepository.getExpandedMovieDetails(movie.id),
-                                                                moviesRepository.getMovieReviews(movie.id),
-                                                                moviesRepository.getMovieVideos(movie.id),
-                                                                true
-                                                                )
-        }
-    }
+//    fun saveMovie(movie: Movie) {
+//        viewModelScope.launch{
+//            localMoviesRepository.insertMovie(movie)
+//            selectedMovieUiState = SelectedMovieUiState.Success(movie,
+//                                                                moviesRepository.getExpandedMovieDetails(movie.id),
+//                                                                moviesRepository.getMovieReviews(movie.id),
+//                                                                moviesRepository.getMovieVideos(movie.id),
+//                                                                )
+//        }
+//    }
 
-    fun deleteMovie(movie: Movie) {
-        viewModelScope.launch {
-            savedMoviesRepository.deleteMovie(movie)
-            selectedMovieUiState = SelectedMovieUiState.Success(movie,
-                                                                moviesRepository.getExpandedMovieDetails(movie.id),
-                                                                moviesRepository.getMovieReviews(movie.id),
-                                                                moviesRepository.getMovieVideos(movie.id),
-                                                                true
-                                                                )
-        }
-    }
+//    fun deleteMovie(movie: Movie) {
+//        viewModelScope.launch {
+//            localMoviesRepository.deleteMovie(movie)
+//            selectedMovieUiState = SelectedMovieUiState.Success(movie,
+//                                                                moviesRepository.getExpandedMovieDetails(movie.id),
+//                                                                moviesRepository.getMovieReviews(movie.id),
+//                                                                moviesRepository.getMovieVideos(movie.id),
+//                                                                )
+//        }
+//    }
 
 
 
@@ -148,8 +165,8 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository, private v
             initializer {
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MovieDBApplication)
                 val moviesRepository = application.container.moviesRepository
-                val savedMoviesRepository = application.container.savedMoviesRepository
-                MovieDBViewModel(moviesRepository = moviesRepository, savedMoviesRepository = savedMoviesRepository)
+                val localMoviesRepository = application.container.localMoviesRepository
+                MovieDBViewModel(moviesRepository = moviesRepository, localMoviesRepository = localMoviesRepository)
             }
         }
     }
