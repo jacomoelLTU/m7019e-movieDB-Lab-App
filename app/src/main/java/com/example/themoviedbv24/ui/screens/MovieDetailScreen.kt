@@ -36,9 +36,12 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
+import com.example.themoviedbv24.model.ExpandedMovieDetails
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.model.MovieReview
+import com.example.themoviedbv24.model.MovieReviewResponse
 import com.example.themoviedbv24.model.MovieVideo
+import com.example.themoviedbv24.model.MovieVideoResponse
 import com.example.themoviedbv24.ui.uiHelper.getReviewCardScreenWidth
 import com.example.themoviedbv24.ui.uiHelper.getScreenWidth
 import com.example.themoviedbv24.utils.Constants
@@ -93,9 +96,17 @@ fun MovieDetailScreen (
                     )
                     Switch (checked = selectedMovieUiState.movie.isFavorite, onCheckedChange = {
                         if (it) {
-                            movieDBViewModel.favoriteMovie(selectedMovieUiState.movie)
+                            movieDBViewModel.favoriteMovie(selectedMovieUiState.movie,
+                                ExpandedMovieDetails(),
+                                MovieReviewResponse(),
+                                MovieVideoResponse()
+                                )
                         } else {
-                            movieDBViewModel.unfavoriteMovie(selectedMovieUiState.movie)
+                            movieDBViewModel.unfavoriteMovie(selectedMovieUiState.movie,
+                                ExpandedMovieDetails(),
+                                MovieReviewResponse(),
+                                MovieVideoResponse()
+                                )
                         }
                     })
                 }

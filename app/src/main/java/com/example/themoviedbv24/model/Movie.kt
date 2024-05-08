@@ -32,7 +32,7 @@ data class Movie(
 
     var isFavorite: Boolean = false,
 
-    var isCached: Boolean = false,
+    var isCached: Boolean = false
 
 )
 

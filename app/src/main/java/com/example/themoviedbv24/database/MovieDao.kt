@@ -14,7 +14,7 @@ interface MovieDao {
     suspend fun insertMovie(movie: Movie) {
         val localMovie = getMovie(movie.id)
         if (localMovie != null) {
-            movie.favorite = movie.favorite || localMovie.favorite
+            movie.isFavorite = movie.isFavorite || localMovie.isFavorite
             movie.isCached = movie.isCached || localMovie.isCached
         }
         insertMovieInternal(movie)
@@ -32,10 +32,10 @@ interface MovieDao {
         deleteNonFavoriteMovies()
     }
 
-    @Query("DELETE FROM movies WHERE favorite = 0")
+    @Query("DELETE FROM movies WHERE isFavorite = 0")
     suspend fun deleteNonFavoriteMovies()
 
-    @Query("UPDATE movies SET isCached = 0 WHERE favorite = 1")
+    @Query("UPDATE movies SET isCached = 0 WHERE isFavorite = 1")
     suspend fun updateCachedStatusForFavorites()
 
     @Query("SELECT * FROM movies WHERE id = :id")
@@ -48,14 +48,14 @@ interface MovieDao {
     suspend fun unfavoriteMovie(id: Long) {
         val localMovie = getMovie(id)
         if (localMovie.isCached) {
-            localMovie.favorite = false
+            localMovie.isFavorite = false
             insertMovieInternal(localMovie)
         } else {
             deleteMovie(id)
         }
     }
 
-    @Query("SELECT * FROM movies WHERE favorite = 1")
+    @Query("SELECT * FROM movies WHERE isFavorite = 1")
     suspend fun getFavoriteMovies(): List<Movie>
 
 }

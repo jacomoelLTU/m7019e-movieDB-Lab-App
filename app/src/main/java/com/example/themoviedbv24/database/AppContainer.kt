@@ -44,12 +44,12 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
     }
 
      override val moviesRepository: NetworkMoviesRepository by lazy {
-        NetworkMoviesRepository(retrofitService)
+        NetworkMoviesRepository(context, retrofitService)
     }
 
 
     override val localMoviesRepository: SavedMoviesRepository by lazy {
-        FavoriteMoviesRepository(MovieDatabase.getDatabase(context = context).movieDao())
+        LocalMoviesRepository(MovieDatabase.getDatabase(context).movieDao())
     }
 
 }

@@ -95,7 +95,7 @@ fun MovieDBAppBar(
                 )
                 DropdownMenuItem(
                     onClick = {
-                        movieDBViewModel.getSavedMovies()
+                        movieDBViewModel.getCachedMovies()
                         menuExpanded = false
                     }, text = {
                         Text(text = stringResource(R.string.saved_movies))
