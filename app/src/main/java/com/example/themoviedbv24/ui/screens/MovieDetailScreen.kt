@@ -97,15 +97,15 @@ fun MovieDetailScreen (
                     Switch (checked = selectedMovieUiState.movie.isFavorite, onCheckedChange = {
                         if (it) {
                             movieDBViewModel.favoriteMovie(selectedMovieUiState.movie,
-                                ExpandedMovieDetails(),
-                                MovieReviewResponse(),
-                                MovieVideoResponse()
+                                selectedMovieUiState.expandedMovieDetails,
+                                selectedMovieUiState.movieReviewResponse,
+                                selectedMovieUiState.movieVideoResponse
                                 )
                         } else {
                             movieDBViewModel.unfavoriteMovie(selectedMovieUiState.movie,
-                                ExpandedMovieDetails(),
-                                MovieReviewResponse(),
-                                MovieVideoResponse()
+                                selectedMovieUiState.expandedMovieDetails,
+                                selectedMovieUiState.movieReviewResponse,
+                                selectedMovieUiState.movieVideoResponse
                                 )
                         }
                     })

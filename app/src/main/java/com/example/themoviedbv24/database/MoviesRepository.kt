@@ -3,6 +3,7 @@ package com.example.themoviedbv24.database
 import android.content.Context
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.themoviedbv24.MovieDBApplication
 import com.example.themoviedbv24.model.ExpandedMovieDetails
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.model.MovieResponse
@@ -21,27 +22,57 @@ interface MoviesRepository {
     suspend fun getMovieReviews(movieId: Long): MovieReviewResponse
 
     suspend fun getMovieVideos(movieId: Long): MovieVideoResponse
+
+
 }
 
 class NetworkMoviesRepository(context: Context, private val apiService: MovieDBApiService) : MoviesRepository {
 
     private val workManager = WorkManager.getInstance(context)
     override var latestFetch = mutableListOf<Movie>()
+    private val applicationContext = context.applicationContext as MovieDBApplication
+
 
     override suspend fun getPopularMovies(): MovieResponse {
-        this.latestFetch = apiService.getPopularMovies().results.toMutableList()
-        val cacheWorker = OneTimeWorkRequestBuilder<CacheWorker>()
-            .build()
-        workManager.enqueue(cacheWorker)
-        return apiService.getPopularMovies()
+        val networkStatus = applicationContext.container.networkHandler.isNetworkAvailable()
+        when (networkStatus) {
+            true -> {
+                this.latestFetch = apiService.getPopularMovies().results.toMutableList()
+                val cacheWorker = OneTimeWorkRequestBuilder<CacheWorker>()
+                    .build()
+                workManager.enqueue(cacheWorker)
+                return apiService.getPopularMovies()
+            }
+            false -> {
+                return MovieResponse(
+                    page = 0,
+                    results = applicationContext.container.localMoviesRepository.getMovies(),
+                    total_pages = 0,
+                    total_results = applicationContext.container.localMoviesRepository.getMovies().size
+                )
+            }
+        }
     }
 
     override suspend fun getTopRatedMovies(): MovieResponse {
-        latestFetch = apiService.getTopRatedMovies().results.toMutableList()
-        val cacheWorker = OneTimeWorkRequestBuilder<CacheWorker>()
-            .build()
-        workManager.enqueue(cacheWorker)
-        return apiService.getTopRatedMovies()
+        val networkStatus = applicationContext.container.networkHandler.isNetworkAvailable()
+        when (networkStatus) {
+            true -> {
+                latestFetch = apiService.getTopRatedMovies().results.toMutableList()
+                val cacheWorker = OneTimeWorkRequestBuilder<CacheWorker>()
+                    .build()
+                workManager.enqueue(cacheWorker)
+                return apiService.getTopRatedMovies()
+            }
+            false -> {
+                return MovieResponse(
+                    page = 0,
+                    results = applicationContext.container.localMoviesRepository.getMovies(),
+                    total_pages = 0,
+                    total_results = applicationContext.container.localMoviesRepository.getMovies().size
+                )
+            }
+        }
     }
 
     override suspend fun getExpandedMovieDetails(movieId: Long) : ExpandedMovieDetails {

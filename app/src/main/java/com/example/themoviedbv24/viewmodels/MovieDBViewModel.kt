@@ -19,6 +19,7 @@ import com.example.themoviedbv24.model.ExpandedMovieDetails
 import com.example.themoviedbv24.model.Movie
 import com.example.themoviedbv24.model.MovieReviewResponse
 import com.example.themoviedbv24.model.MovieVideoResponse
+import com.example.themoviedbv24.network.NetworkHandler
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -45,7 +46,8 @@ sealed interface SelectedMovieUiState {
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 class MovieDBViewModel(private val moviesRepository: MoviesRepository,
-                       private val localMoviesRepository: SavedMoviesRepository
+                       private val localMoviesRepository: SavedMoviesRepository,
+                       private val networkHandler: NetworkHandler
     ) : ViewModel() {
 
     var movieListUiState: MovieListUiState by mutableStateOf(MovieListUiState.Loading)
@@ -53,8 +55,30 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository,
     var selectedMovieUiState: SelectedMovieUiState by mutableStateOf(SelectedMovieUiState.Loading)
         private set
 
+    var currentCategory: String = ""
+
     init {
-        getPopularMovies()
+        observeConnectivityChanges()
+        getFavoriteMovies()
+    }
+
+    private fun observeConnectivityChanges() {
+        viewModelScope.launch {
+            networkHandler.isConnected.collect { isConnected ->
+                if (isConnected) {
+                    when(currentCategory) {
+                        "popular" -> {
+                            getPopularMovies()
+                        }
+                        "top_rated" -> {
+                            getTopRatedMovies()
+                        }
+                        else -> {
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun getTopRatedMovies() {
@@ -98,6 +122,7 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository,
         }
     }
 
+
     fun favoriteMovie(movie: Movie, details: ExpandedMovieDetails, reviews: MovieReviewResponse, videos: MovieVideoResponse) {
         movie.isFavorite = true
         viewModelScope.launch {
@@ -113,6 +138,20 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository,
             selectedMovieUiState = SelectedMovieUiState.Success(movie, ExpandedMovieDetails(), MovieReviewResponse(), MovieVideoResponse())
         }
     }
+
+    fun getFavoriteMovies() {
+        viewModelScope.launch {
+            movieListUiState = MovieListUiState.Loading
+            movieListUiState = try {
+                MovieListUiState.Success(localMoviesRepository.getFavoriteMovies())
+            } catch (e: IOException) {
+                MovieListUiState.Error
+            } catch (e: HttpException) {
+                MovieListUiState.Error
+            }
+        }
+    }
+
 
     fun setSelectedMovie(movie: Movie) {
         viewModelScope.launch {
@@ -134,31 +173,6 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository,
         }
     }
 
-//    fun saveMovie(movie: Movie) {
-//        viewModelScope.launch{
-//            localMoviesRepository.insertMovie(movie)
-//            selectedMovieUiState = SelectedMovieUiState.Success(movie,
-//                                                                moviesRepository.getExpandedMovieDetails(movie.id),
-//                                                                moviesRepository.getMovieReviews(movie.id),
-//                                                                moviesRepository.getMovieVideos(movie.id),
-//                                                                )
-//        }
-//    }
-
-//    fun deleteMovie(movie: Movie) {
-//        viewModelScope.launch {
-//            localMoviesRepository.deleteMovie(movie)
-//            selectedMovieUiState = SelectedMovieUiState.Success(movie,
-//                                                                moviesRepository.getExpandedMovieDetails(movie.id),
-//                                                                moviesRepository.getMovieReviews(movie.id),
-//                                                                moviesRepository.getMovieVideos(movie.id),
-//                                                                )
-//        }
-//    }
-
-
-
-
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -166,7 +180,11 @@ class MovieDBViewModel(private val moviesRepository: MoviesRepository,
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MovieDBApplication)
                 val moviesRepository = application.container.moviesRepository
                 val localMoviesRepository = application.container.localMoviesRepository
-                MovieDBViewModel(moviesRepository = moviesRepository, localMoviesRepository = localMoviesRepository)
+                val networkHandler = application.container.networkHandler
+                MovieDBViewModel(moviesRepository = moviesRepository,
+                                 localMoviesRepository = localMoviesRepository,
+                                 networkHandler = networkHandler
+                )
             }
         }
     }
